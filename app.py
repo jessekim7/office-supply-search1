@@ -3,6 +3,19 @@ import pandas as pd
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
+# Synonym dictionary
+synonym_map = {
+    "sticky note": "post-it",
+    "post it": "post-it",
+    "post-it": "post-it",
+    "scotch tape": "tape",
+    "highlighter": "marker",
+    "writing tool": "pen",
+    "dry erase marker": "whiteboard marker",
+    "binder clip": "clip",
+    # Add more as needed
+}
+
 # Load the Excel file
 def load_data():
     file_path = "Office Supply Inventory Project_v1.xlsx"
@@ -21,13 +34,15 @@ def fuzzy_search(df, query, threshold=60):
     return [match[1] for match in matches]
 
 # Streamlit app
-st.title("📂 Office Supply Search")
+st.title("\ud83d\udcc2 Office Supply Search")
 
-query = st.text_input("Search for an item:", "e.g. pen, tape, folder")
+query = st.text_input("What supply are you looking for? (e.g. pen, sticky note, binder)")
 
 if query:
     df = load_data()
-    results = fuzzy_search(df, query)
+    # Preprocess query using synonym map
+    normalized_query = synonym_map.get(query.lower(), query.lower())
+    results = fuzzy_search(df, normalized_query)
 
     if results:
         st.success(f"Found {len(results)} matching item(s):")
@@ -39,4 +54,3 @@ if query:
         st.warning("No matching items found. Try another keyword.")
 else:
     st.info("Enter a keyword to begin your search.")
-
