@@ -6,8 +6,8 @@ from fuzzywuzzy import process
 # Synonym dictionary
 synonym_map = {
     "sticky note": "post-it",
-    "post it": "post-it",
-    "post-it": "post-it",
+    "post it": "sticky note",
+    "post-it": "sticky note",
     "scotch tape": "tape",
     "highlighter": "marker",
     "writing tool": "pen",
@@ -40,9 +40,14 @@ query = st.text_input("What supply are you looking for? (e.g. pen, sticky note, 
 
 if query:
     df = load_data()
-    # Preprocess query using synonym map
+
+    # Try synonym first
     normalized_query = synonym_map.get(query.lower(), query.lower())
     results = fuzzy_search(df, normalized_query)
+
+    # If no results, try original query as fallback
+    if not results and normalized_query != query.lower():
+        results = fuzzy_search(df, query.lower())
 
     if results:
         st.success(f"Found {len(results)} matching item(s):")
