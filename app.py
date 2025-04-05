@@ -34,7 +34,7 @@ def fuzzy_search(df, query, threshold=60):
     return [match[1] for match in matches]
 
 # Streamlit app
-st.title("\ud83d\udcc2 Office Supply Search")
+st.title("📂 Office Supply Search")
 
 query = st.text_input("What supply are you looking for? (e.g. pen, sticky note, binder)")
 
